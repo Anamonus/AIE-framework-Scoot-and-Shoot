@@ -12,10 +12,13 @@ public:
 	
 	void setSpeed(int newSpeed);
 	void setHealth(int newHealth);
+	void setDimensions(int newWidth, int newHeight); 
 	void setID(int newSpriteID);
 	void moveRight(float a_fDeltaTime);
 	void moveLeft(float a_fDeltaTime);
-	
+	int width;
+	int height;
+
 private:
 	
 	int spriteID;
