@@ -11,7 +11,6 @@ int screenHeight = 800;
 int main( int argc, char* argv[] )
 {	
     Initialise(screenWidth, screenHeight, false, "Shoot And Scoot");
-    
     SetBackgroundColour(SColour(0, 0, 0, 255));
 	player player;
 	Car enemy[10];
@@ -27,3 +26,4 @@ int main( int argc, char* argv[] )
 
     return 0;
 }
+ 

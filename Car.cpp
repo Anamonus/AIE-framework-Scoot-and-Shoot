@@ -21,13 +21,13 @@ void Car::setID(int newSpriteID)
 {
 	spriteID = newSpriteID;
 }
-void Car::moveRight(int a_fDeltaTime)
+void Car::moveRight(float a_fDeltaTime)
 {
 	x += speed * a_fDeltaTime;
 	MoveSprite(spriteID, x, y);
 	DrawSprite(spriteID);
 }
-void Car::moveLeft(int a_fDeltaTime)
+void Car::moveLeft(float a_fDeltaTime)
 {
 	x -= speed * a_fDeltaTime;
 	MoveSprite(spriteID, x, y);
