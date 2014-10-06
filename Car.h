@@ -16,13 +16,15 @@ public:
 	void setID(int newSpriteID);
 	void moveRight(float a_fDeltaTime);
 	void moveLeft(float a_fDeltaTime);
+	void setPos(int newX, int newY);
 	int width;
 	int height;
+	int spriteID;
+	int health;
 
 private:
 	
-	int spriteID;
-	int health;
+	
 	int speed;
 	
 };

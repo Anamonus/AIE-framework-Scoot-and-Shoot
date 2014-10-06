@@ -38,3 +38,9 @@ void Car::setDimensions(int a_width, int a_height)
 	width = a_width;
 	height = a_height;
 }
+void Car::setPos(int newX, int newY)
+{
+	x = newX;
+	y = newY;
+	MoveSprite(spriteID, x, y);
+}

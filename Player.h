@@ -9,7 +9,11 @@ public:
 	~player();
 	void setMoveKeys(int a_moveLeft, int a_moveRight);
 	void setMoveExtremes(int a_leftExtreme, int a_rightExtreme);
-	void move(float a_fDeltaTime);
+	void action(float a_fDeltaTime);
+	void iDMotion(int newSpriteID);
+	void returnID();
+	int spriteMotion;
+	int spriteBuffer;
 private:
 	int leftKey;
 	int rightKey;
