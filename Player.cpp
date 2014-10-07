@@ -1,49 +1,57 @@
 #include <iostream>
 #include "Player.h"
 #include "AIE.h"
-#include "Projectile.h"
 
 player::player()
 {
-
 }
 player::~player()
 {
-
 }
+
 void player::setMoveKeys(int a_moveLeft, int a_moveRight)
 {
 	leftKey = a_moveLeft;
 	rightKey = a_moveRight;
+}
+void player::setFireKey(int a_fire)
+{
+	fireKey = a_fire;
 }
 void player::setMoveExtremes(int a_leftExtreme, int a_rightExtreme)
 {
 	leftExtreme = a_leftExtreme;
 	rightExtreme = a_rightExtreme;
 }
-void player::action(float a_fDeltaTime)
+void player::action(float a_DeltaTime)
 {
-
-
+	if (IsKeyDown(fireKey))
+	{
+		spriteID = spritefire;
+		MoveSprite(spritefire, x, y);
+	}
+	else
+	{
+		MoveSprite(spritefire, x, y);
+		spriteID = spriteBuffer;
+	}
 	if (IsKeyDown(leftKey))
 	{
-		moveLeft(a_fDeltaTime);
-		spriteBuffer = spriteID;
-		spriteID = spriteMotion;
+		moveLeft(a_DeltaTime);
+		MoveSprite(spritefire, x, y);
 
 	}
 	if (IsKeyDown(rightKey))
 	{
-		moveRight(a_fDeltaTime);
-		spriteBuffer = spriteID;
-		spriteID = spriteMotion;
+		moveRight(a_DeltaTime);
+		MoveSprite(spritefire, x, y);
 	}
 }
-void player::iDMotion(int newSpriteID)
+void player::iDfire(int newSpriteID)
 {
-	spriteMotion = newSpriteID;
+	spritefire = newSpriteID;
 }
-void player::returnID()
+void player::setBuffer()
 {
-	spriteID = spriteBuffer;
+	spriteBuffer = spriteID;
 }
