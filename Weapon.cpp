@@ -3,7 +3,6 @@
 #include "AIE.h"
 #include "Projectile.h"
 
-projectile bullet[50];
 
 Weapon::Weapon()
 {
@@ -28,15 +27,7 @@ void Weapon::setFireKey(int a_FireKey)
 }
 void Weapon::shoot(float a_deltaTime)
 {
-	if (IsKeyDown(fireKey))
-	{
-		fireCooldown += a_deltaTime;
-		if (fireCooldown >= fireRate)
-		{
-			bulletNumber++;
-		}
-		
-	}
+	
 }
 //void Weapon::setAngle(int newAngle)
 //{

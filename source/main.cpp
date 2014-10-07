@@ -5,6 +5,7 @@
 #include "Weapon.h"
 #include "Player.h"
 #include <string>
+#include "Projectile.h"
 
 using namespace std;
 
@@ -13,13 +14,10 @@ int screenHeight = 800;
 bool playerTurn = false;
 double mouseX;
 double mouseY;
-double angleBuffer;
-char angleDisplay[10] = "0";
 void mouseConversion();
-unsigned int xDif;
-unsigned int yDif;
-float radToDeg = 57.2957795;
-double angleChecker;
+int bulletNumber = 0;
+float bulletBuffer;
+
 int main( int argc, char* argv[] )
 {	
     Initialise(screenWidth, screenHeight, false, "Shoot And Scoot");
@@ -34,11 +32,21 @@ int main( int argc, char* argv[] )
 	player.setPos(screenWidth /2, screenHeight  / 4);
 	Car enemy[10];
 	Weapon playerGun;
+	projectile bullet[50];
+	playerGun.setFireKey(' ');
+	playerGun.setFireRate(5);
+	for (int i = 0; i <= 50; i++)
+	{
+		bullet[i].setID(CreateSprite("./images/shootandscoot_bullet.png", 8, 16, true));
+		bullet[i].setPos(player.x, player.y);
+	}
     do
     {
 		float deltaTime = GetDeltaTime();
 		GetMouseLocation(mouseX, mouseY);
 		mouseConversion();
+		bulletBuffer += deltaTime;
+		
 		DrawSprite(player.spriteID);
 		player.action(deltaTime);
         ClearScreen();
