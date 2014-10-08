@@ -10,10 +10,10 @@ public:
 	void setID(int newID);
 	void setPos(float newX, float newY);
 	void setDimensions(int newWidth, int newHeight);
-	void updateFireSpeed(int newFireSpeed);
+	void updateFireSpeed(float newFireSpeed);
 	void updateFireCooldown(float a_deltaTime);
 	void setSpeed(int newSpeed);
-	int fireSpeed;
+	float fireSpeed;
 	float fireCooldown = 0;
 	int spriteID;
 	int speed;

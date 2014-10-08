@@ -4,6 +4,7 @@
 #include "Car.h"
 #include "Player.h"
 #include "Bullet.h"
+#include "StateManager.h"
 
 using namespace std;
 
@@ -14,11 +15,14 @@ double mouseX;
 double mouseY;
 int bulletBuffer = 0;
 void mouseConversion();
+const int bulletCap = 100;
 
 int main( int argc, char* argv[] )
 {	
     Initialise(screenWidth, screenHeight, false, "Shoot And Scoot");
     SetBackgroundColour(SColour(0, 0, 0, 255));
+	StateManager stateManager;
+	stateManager.SetState(stateManager.MAIN_MENU);
 	player player;
 	player.setDimensions(64, 64);
 	player.setID(CreateSprite("./images/shootandscoot_player.png", player.width, player.height, true));
@@ -30,12 +34,12 @@ int main( int argc, char* argv[] )
 	player.setPos(screenWidth /2, screenHeight  / 4);
 	player.setBuffer();
 	Car enemy[10];
-	bullet bullet[50];
-	for (int i = 0; i < 50; i++)
+	bullet bullet[bulletCap];
+	for (int i = 0; i < bulletCap; i++)
 	{
 		bullet[i].setDimensions(40, 16);
 		bullet[i].setID(CreateSprite("./images/shootandscoot_bullet.png", bullet[i].width, bullet[i].height, true));
-		bullet[i].updateFireSpeed(0.5f);
+		bullet[i].updateFireSpeed(0.1f);
 		bullet[i].setPos(player.x, player.y);
 		bullet[i].setSpeed(1000);
 	}
@@ -47,17 +51,34 @@ int main( int argc, char* argv[] )
 		mouseConversion();
 		if (IsKeyDown(player.fireKey) && bullet[bulletBuffer].fireCooldown > bullet[bulletBuffer].fireSpeed)
 		{
-			bullet[bulletBuffer].fire(deltaTime);
 			bulletBuffer = (bulletBuffer + 1);
+			bullet[bulletBuffer].firing = true;
 		}
 		DrawSprite(player.spriteID);
 		player.action(deltaTime);
 		MoveSprite(player.spriteID, player.x, player.y);
-        ClearScreen();
-		if (bulletBuffer > 49)
+		for (int i = 0; i < bulletCap; i++)
 		{
-			bulletBuffer = 0;
+			if (bullet[i].firing == true)
+			{
+				bullet[i].fire(deltaTime);
+				if (bullet[i].y > screenHeight)
+				{
+					bullet[i].firing = false;
+					bullet[i].fireCooldown = 0;
+				}
+			}
+			else if (bullet[i].firing == false)
+			{
+				bullet[i].setPos(player.x, player.y);
+			}
+			if (bulletBuffer > bulletCap - 1)
+			{
+				bulletBuffer = 0;
+			}
 		}
+		ClearScreen();
+		
     } while(!FrameworkUpdate());
 
     Shutdown();
