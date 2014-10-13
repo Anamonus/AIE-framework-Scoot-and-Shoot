@@ -21,11 +21,14 @@ public:
 	int height;
 	int spriteID;
 	int health;
+	int speed;
+	bool hit = false;
+	bool alive = true;
 
 private:
 	
 	
-	int speed;
+	
 	
 };
 

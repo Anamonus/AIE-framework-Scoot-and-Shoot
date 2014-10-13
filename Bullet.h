@@ -21,6 +21,7 @@ public:
 	int height;
 	float x, y;
 	bool firing = false;
+	bool collided = false;
 private:
 
 

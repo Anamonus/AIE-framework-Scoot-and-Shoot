@@ -92,6 +92,7 @@
   <ItemGroup>
     <ClCompile Include="Bullet.cpp" />
     <ClCompile Include="Car.cpp" />
+    <ClCompile Include="Collision.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="source\main.cpp" />
   </ItemGroup>
