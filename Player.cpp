@@ -9,19 +9,23 @@ player::~player()
 {
 }
 
-void player::setMoveKeys(int a_moveLeft, int a_moveRight)
+void player::setMoveKeys(int a_moveLeft, int a_moveRight, int a_moveUp, int a_moveDown)
 {
 	leftKey = a_moveLeft;
 	rightKey = a_moveRight;
+	upKey = a_moveUp;
+	downKey = a_moveDown;
 }
 void player::setFireKey(int a_fire)
 {
 	fireKey = a_fire;
 }
-void player::setMoveExtremes(int a_leftExtreme, int a_rightExtreme)
+void player::setMoveExtremes(int a_leftExtreme, int a_rightExtreme, int a_upExtreme, int a_downExtreme)
 {
 	leftExtreme = a_leftExtreme;
 	rightExtreme = a_rightExtreme;
+	upExtreme = a_upExtreme;
+	downExtreme = a_downExtreme;
 }
 void player::action(float a_DeltaTime)
 {
@@ -38,12 +42,37 @@ void player::action(float a_DeltaTime)
 	if (IsKeyDown(leftKey))
 	{
 		moveLeft(a_DeltaTime);
+		if (x < leftExtreme)
+		{
+			x = leftExtreme;
+		}
 		MoveSprite(spritefire, x, y);
-
 	}
 	if (IsKeyDown(rightKey))
 	{
 		moveRight(a_DeltaTime);
+		if (x > rightExtreme)
+		{
+			x = rightExtreme;
+		}
+		MoveSprite(spritefire, x, y);
+	}
+	if (IsKeyDown(upKey))
+	{
+		moveUp(a_DeltaTime);
+		if (y > upExtreme)
+		{
+			y = upExtreme;
+		}
+		MoveSprite(spritefire, x, y);
+	}
+	if (IsKeyDown(downKey))
+	{
+		moveDown(a_DeltaTime);
+		if (y < downExtreme)
+		{
+			y = downExtreme;
+		}
 		MoveSprite(spritefire, x, y);
 	}
 }

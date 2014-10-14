@@ -16,6 +16,8 @@ public:
 	void setID(int newSpriteID);
 	void moveRight(float a_fDeltaTime);
 	void moveLeft(float a_fDeltaTime);
+	void moveDown(float a_fDeltaTime);
+	void moveUp(float a_fDeltaTime);
 	void setPos(int newX, int newY);
 	int width;
 	int height;

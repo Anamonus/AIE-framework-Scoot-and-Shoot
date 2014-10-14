@@ -11,7 +11,6 @@ using namespace std;
 
 int screenWidth = 600;
 int screenHeight = 800;
-bool playerTurn = false;
 double mouseX;
 double mouseY;
 int bulletBuffer = 0;
@@ -21,21 +20,23 @@ int enemyXbuffer = screenWidth * .12;
 int enemyYbuffer = screenHeight * .95;
 const int enemyCount = 10;
 float levelProgress = screenHeight;
-float levelSpeed = 0.5;
+float levelSpeed = 125;
 
 int main( int argc, char* argv[] )
 {	
     Initialise(screenWidth, screenHeight, false, "Shoot And Scoot");
     SetBackgroundColour(SColour(0, 0, 0, 255));
+	StateManager GameStates;
+	GameStates.SetState(GameStates.MAIN_MENU);
 	int levelOne = CreateSprite("./images/shootandscoot_level.png", screenWidth, screenHeight * 2, true);
 	player player;
 	player.setDimensions(64, 64);
 	player.setID(CreateSprite("./images/shootandscoot_player.png", player.width, player.height, true));
 	player.iDfire(CreateSprite("./images/shootandscoot_player_fire.png", player.width, player.height, true));
-	player.setMoveKeys('A', 'D');
+	player.setMoveKeys('A', 'D', 'W', 'S');
 	player.setFireKey(' ');
-	player.setSpeed(500);
-	player.setMoveExtremes(player.width / 2, screenWidth - (player.width / 2));
+	player.setSpeed(250);
+	player.setMoveExtremes(player.width / 2, screenWidth - (player.width / 2), screenHeight - (player.height / 2), player.height / 2);
 	player.setPos(screenWidth /2, screenHeight  / 4);
 	player.setBuffer();
 	Car enemy[enemyCount];
@@ -59,15 +60,18 @@ int main( int argc, char* argv[] )
 	{
 		bullet[i].setDimensions(40, 16);
 		bullet[i].setID(CreateSprite("./images/shootandscoot_bullet.png", bullet[i].width, bullet[i].height, true));
-		bullet[i].updateFireSpeed(0.05f);
+		bullet[i].updateFireSpeed(0.2f);
 		bullet[i].setPos(player.x, player.y);
 		bullet[i].setSpeed(1000);
 	}
     do
     {
+		
+		
+		float deltaTime = GetDeltaTime();
 		MoveSprite(levelOne, screenWidth / 2, levelProgress);
-		levelProgress -= levelSpeed;
-		if (levelProgress == 0)
+		levelProgress -= levelSpeed * deltaTime;
+		if (levelProgress <= 0)
 		{
 			levelProgress = screenHeight;
 		}
@@ -76,7 +80,6 @@ int main( int argc, char* argv[] )
 		{
 			DrawSprite(enemy[i].spriteID);
 		}
-		float deltaTime = GetDeltaTime();
 		bullet[bulletBuffer].updateFireCooldown(deltaTime);
 		GetMouseLocation(mouseX, mouseY);
 		mouseConversion();
@@ -114,7 +117,7 @@ int main( int argc, char* argv[] )
 		{
 			for (int ii = 0; ii < enemyCount; ii++)
 			{
-				if (collision(bullet[i].x, bullet[i].y, enemy[ii].x, enemy[ii].y, bullet[bulletBuffer].width, enemy[ii].width))
+				if (collision(bullet[i].x, bullet[i].y, enemy[ii].x, enemy[ii].y, bullet[i].width, enemy[ii].width) && (bullet[i].firing == true))
 				{
 					if (enemy[ii].alive == true)
 					{
