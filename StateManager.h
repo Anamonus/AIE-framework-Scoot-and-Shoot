@@ -11,7 +11,9 @@ public:
 	{
 		MAIN_MENU,
 		INSTRUCTIONS,
-		IN_GAME,
+		LEVEL_ONE,
+		LEVEL_TWO,
+		LEVEL_THREE,
 	};
 
 	void SetState(GameState gameState);

@@ -3,43 +3,43 @@
 #include "AIE.h"
 
 
-bullet::bullet()
+Bullet::Bullet()
 {
 }
-bullet::~bullet()
+Bullet::~Bullet()
 {
 }
 
-void bullet::fire(float a_DeltaTime)
+void Bullet::fire(float a_DeltaTime)
 {
 	y += speed * a_DeltaTime;
 	MoveSprite(spriteID, x, y);
 	DrawSprite(spriteID);
 }
-void bullet::setDimensions(int newWidth, int newHeight)
+void Bullet::setDimensions(int newWidth, int newHeight)
 {
 	width = newWidth;
 	height = newHeight;
 }
-void bullet::setID(int newID)
+void Bullet::setID(int newID)
 {
 	spriteID = newID;
 }
-void bullet::updateFireSpeed(float newFireSpeed)
+void Bullet::updateFireSpeed(float newFireSpeed)
 {
 	fireSpeed = newFireSpeed;
 }
-void bullet::updateFireCooldown(float a_deltaTime)
+void Bullet::updateFireCooldown(float a_deltaTime)
 {
 	fireCooldown += a_deltaTime;
 }
-void bullet::setPos(float newX, float newY)
+void Bullet::setPos(float newX, float newY)
 {
 	x = newX;
 	y = newY;
 	MoveSprite(spriteID, x, y);
 }
-void bullet::setSpeed(int newSpeed)
+void Bullet::setSpeed(int newSpeed)
 {
 	speed = newSpeed;
 }

@@ -2,32 +2,32 @@
 #include "Player.h"
 #include "AIE.h"
 
-player::player()
+Player::Player()
 {
 }
-player::~player()
+Player::~Player()
 {
 }
 
-void player::setMoveKeys(int a_moveLeft, int a_moveRight, int a_moveUp, int a_moveDown)
+void Player::setMoveKeys(int a_moveLeft, int a_moveRight, int a_moveUp, int a_moveDown)
 {
 	leftKey = a_moveLeft;
 	rightKey = a_moveRight;
 	upKey = a_moveUp;
 	downKey = a_moveDown;
 }
-void player::setFireKey(int a_fire)
+void Player::setFireKey(int a_fire)
 {
 	fireKey = a_fire;
 }
-void player::setMoveExtremes(int a_leftExtreme, int a_rightExtreme, int a_upExtreme, int a_downExtreme)
+void Player::setMoveExtremes(int a_leftExtreme, int a_rightExtreme, int a_upExtreme, int a_downExtreme)
 {
 	leftExtreme = a_leftExtreme;
 	rightExtreme = a_rightExtreme;
 	upExtreme = a_upExtreme;
 	downExtreme = a_downExtreme;
 }
-void player::action(float a_DeltaTime)
+void Player::action(float a_DeltaTime)
 {
 	if (IsKeyDown(fireKey))
 	{
@@ -76,11 +76,11 @@ void player::action(float a_DeltaTime)
 		MoveSprite(spritefire, x, y);
 	}
 }
-void player::iDfire(int newSpriteID)
+void Player::iDfire(int newSpriteID)
 {
 	spritefire = newSpriteID;
 }
-void player::setBuffer()
+void Player::setBuffer()
 {
 	spriteBuffer = spriteID;
 }

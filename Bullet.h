@@ -1,11 +1,11 @@
 #ifndef _BULLET_H_
 #define _BULLET_H_
 
-class bullet
+class Bullet
 {
 public:
-	bullet();
-	~bullet();
+	Bullet();
+	~Bullet();
 	void fire(float a_deltaTime);
 	void setID(int newID);
 	void setPos(float newX, float newY);

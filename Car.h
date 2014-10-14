@@ -25,7 +25,7 @@ public:
 	int health;
 	int speed;
 	bool hit = false;
-	bool alive = true;
+	bool alive = false;
 
 private:
 	

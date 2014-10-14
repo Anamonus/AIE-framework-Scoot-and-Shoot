@@ -93,6 +93,7 @@
     <ClCompile Include="Bullet.cpp" />
     <ClCompile Include="Car.cpp" />
     <ClCompile Include="Collision.cpp" />
+    <ClCompile Include="Enemy.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="source\main.cpp" />
     <ClCompile Include="StateManager.cpp" />
@@ -101,6 +102,7 @@
     <ClInclude Include="Bullet.h" />
     <ClInclude Include="Car.h" />
     <ClInclude Include="Collision.h" />
+    <ClInclude Include="Enemy.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="StateManager.h" />
   </ItemGroup>
