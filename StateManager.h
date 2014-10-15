@@ -15,10 +15,10 @@ public:
 		LEVEL_TWO,
 		LEVEL_THREE,
 	};
+	GameState currentState= MAIN_MENU;
 
 	void SetState(GameState gameState);
-	GameState GetState();
-
+	
 	~StateManager();
 
 private:

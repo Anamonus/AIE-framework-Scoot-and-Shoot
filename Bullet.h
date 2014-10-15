@@ -22,6 +22,7 @@ public:
 	float x, y;
 	bool firing = false;
 	bool collided = false;
+	bool swap = false;
 private:
 
 

@@ -12,5 +12,5 @@ StateManager::~StateManager()
 }
 void StateManager::SetState(GameState gameState)
 {
-	
+	GameState currentState = gameState;
 }
