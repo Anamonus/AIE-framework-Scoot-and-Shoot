@@ -1,6 +1,5 @@
 #ifndef _BUTTON_H_
 #define _BUTTON_H_
- 
 class Button
 {
 public:
@@ -13,6 +12,4 @@ public:
 	void setPos(float newX, float newY);
 	bool isClicked = false;
 };
-
-
 #endif

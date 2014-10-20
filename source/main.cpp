@@ -7,6 +7,7 @@
 #include "StateManager.h"
 #include "Collision.h"
 #include "Enemy.h"
+#include "Button.h"
 int screenWidth = 600;
 int screenHeight = 800;
 int enemyXbuffer = screenWidth * .25;
@@ -19,26 +20,28 @@ const int enemyCount = 10;
 double mouseX;
 double mouseY;
 void mouseConversion();
-void enemyChecks(float a_deltaTime);
+void enemyChecks(float a_deltaTime, int a_screenHeight);
 void bulletChecks(float a_deltaTime);
 void trackMouse();
 void initializing();
+void enemySpawns(float a_deltaTime);
 float enemySpawnBuffer;
 float levelProgress = screenHeight;
 float levelSpeed = 125;
 char deadEnemies[6];
 Enemy enemy[enemyCount];
+Enemy enemyTwo[enemyCount];
 Bullet bullet[bulletCap];
 Player player;
+Button startButton;
 int main(int argc, char* argv[])
 {
 	Initialise(screenWidth, screenHeight, false, "Shoot And Scoot");
 	SetBackgroundColour(SColour(0, 0, 0, 255));
 	StateManager GameStates;
 	GameStates.SetState(GameStates.MAIN_MENU);
-	int levelOne = CreateSprite("./images/shootandscoot_level.png", screenWidth, screenHeight * 2, true);
+	int level = CreateSprite("./images/shootandscoot_level.png", screenWidth, screenHeight * 2, true);
 	int mainMenu = CreateSprite("./images/shootandscoot_title.png", screenWidth, screenHeight, true);
-	int startButton = CreateSprite("./images/shootandscoot_startbutton.png", 200, 64, true);
 	//Creates all the sprites, limitations, and commands for all entities
 	initializing();
 	do
@@ -48,20 +51,23 @@ int main(int argc, char* argv[])
 		{
 		case GameStates.MAIN_MENU:
 			MoveSprite(mainMenu, screenWidth / 2, screenHeight / 2);
-			MoveSprite(startButton, screenWidth / 2, screenHeight * .4);
 			DrawSprite(mainMenu);
-			DrawSprite(startButton);
+			MoveSprite(startButton.spriteID, startButton.x, startButton.y);
+			DrawSprite(startButton.spriteID);
 			trackMouse();
-			pointBoxCollision(mouseX, mouseY, startButton.x, startButton.y, startButton.height, startButton.width);
+			if (pointBoxCollision(mouseX, mouseY, startButton.x, startButton.y, startButton.height, startButton.width) && GetMouseButtonDown(MOUSE_BUTTON_1))
+			{
+				GameStates.currentState = GameStates.LEVEL_ONE;
+			}
 			break;
 		case GameStates.LEVEL_ONE:
-			MoveSprite(levelOne, screenWidth / 2, levelProgress);
+			MoveSprite(level, screenWidth / 2, levelProgress);
 			levelProgress -= levelSpeed * deltaTime;
 			if (levelProgress <= 0)
 			{
 				levelProgress = screenHeight;
 			}
-			DrawSprite(levelOne);
+			DrawSprite(level);
 			itoa(enemiesSlain, deadEnemies, 10);
 			DrawString(deadEnemies, screenWidth * .5, screenHeight * .95);
 			DrawSprite(player.spriteID);
@@ -71,15 +77,49 @@ int main(int argc, char* argv[])
 			//Bullet actions
 			bulletChecks(deltaTime);
 			//Enemy actions
-			enemyChecks(deltaTime);
+			enemySpawns(deltaTime);
+			enemyChecks(deltaTime, screenHeight);
 			if (enemiesSlain == 15)
 			{
 				GameStates.currentState = GameStates.LEVEL_TWO;
+				enemiesSlain = 0;
 			}
 			break;
 		case GameStates.LEVEL_TWO:
+			MoveSprite(level, screenWidth / 2, levelProgress);
+			levelProgress -= levelSpeed * deltaTime;
+			if (levelProgress <= 0)
+			{
+				levelProgress = screenHeight;
+			}
+			DrawSprite(level);
+			itoa(enemiesSlain, deadEnemies, 10);
+			DrawString(deadEnemies, screenWidth * .5, screenHeight * .95);
+			DrawSprite(player.spriteID);
+			//Player actions
+			player.action(deltaTime);
+			MoveSprite(player.spriteID, player.x, player.y);
+			//Bullet actions
+			bulletChecks(deltaTime);
+			//Enemy actions
+			
 			break;
 		case GameStates.LEVEL_THREE:
+			MoveSprite(level, screenWidth / 2, levelProgress);
+			levelProgress -= levelSpeed * deltaTime;
+			if (levelProgress <= 0)
+			{
+				levelProgress = screenHeight;
+			}
+			DrawSprite(level);
+			itoa(enemiesSlain, deadEnemies, 10);
+			DrawString(deadEnemies, screenWidth * .5, screenHeight * .95);
+			DrawSprite(player.spriteID);
+			//Player actions
+			player.action(deltaTime);
+			MoveSprite(player.spriteID, player.x, player.y);
+			//Bullet actions
+			bulletChecks(deltaTime);
 			break;
 		}	
 		ClearScreen();
@@ -97,27 +137,11 @@ void mouseConversion()
 	mouseY = (mouseY - screenHeight);
 	mouseY = (mouseY * -1);
 }
-void enemyChecks(float a_deltaTime)
+void enemyChecks(float a_deltaTime, int a_screenHeight)
 {
-	enemySpawnBuffer += a_deltaTime;
-	if (enemyBuffer >= enemyCount - 1)
-	{
-		enemyBuffer = 0;
-	}
-	if (enemySpawnBuffer >= enemy[enemyBuffer].spawnTime)
-	{
-		enemy[enemyBuffer].setDimensions(64, 64);
-		enemy[enemyBuffer].setHealth(15);
-		enemy[enemyBuffer].setID(CreateSprite("./images/shootandscoot_enemy.png", enemy[enemyBuffer].width, enemy[enemyBuffer].height, true));
-		enemy[enemyBuffer].setPos((screenWidth / 2) - enemyXbuffer, enemyYbuffer);
-		enemy[enemyBuffer].alive = true;
-		enemyBuffer += 1;
-		enemyXbuffer = -(enemyXbuffer);
-		enemySpawnBuffer = 0;
-	}
-	
 	for (int i = 0; i < enemyCount; i++)
 	{
+		enemy[i].enemyCheck(a_deltaTime, a_screenHeight);
 		if (enemy[i].alive == true)
 		{
 			if (enemyXbuffer < 0)
@@ -128,31 +152,11 @@ void enemyChecks(float a_deltaTime)
 			{
 				enemy[enemyBuffer].flip = false;
 			}
-			enemy[i].moveDown(a_deltaTime);
-			DrawSprite(enemy[i].spriteID);
-			if (enemy[i].y < screenHeight / 2)
+			if ((enemy[i].health <= 0) && (enemy[i].alive == true))
 			{
-				if (enemy[i].flip == true)
-				{
-					RotateSprite(enemy[i].spriteID, -45 * a_deltaTime);
-					enemy[i].moveLeft(a_deltaTime);
-				}
-				else if (enemy[i].flip == false)
-				{
-					RotateSprite(enemy[i].spriteID, 45 * a_deltaTime);
-					enemy[i].moveRight(a_deltaTime);
-				}
+				enemy[i].alive = false;
+				enemiesSlain++;
 			}
-		}
-		if (enemy[i].hit == true)
-		{
-			enemy[i].health -= 5;
-			enemy[i].hit = false;
-		}
-		if ((enemy[i].health <= 0) && (enemy[i].alive == true))
-		{
-			enemy[i].alive = false;
-			enemiesSlain++;
 		}
 	}
 }
@@ -235,6 +239,11 @@ void initializing()
 	player.setMoveExtremes(player.width / 2, screenWidth - (player.width / 2), screenHeight - (player.height / 2), player.height / 2);
 	player.setPos(screenWidth / 2, screenHeight / 4);
 	player.setBuffer();
+
+	startButton.setDimensions(200, 64);
+	startButton.setPos(screenWidth / 2, screenHeight * .4);
+	startButton.setID(CreateSprite("./images/shootandscoot_startbutton.png", startButton.width, startButton.height, true));
+
 	for (int i = 0; i < enemyCount; i++)
 	{
 		enemy[enemyBuffer].setID(CreateSprite("./images/shootandscoot_enemy.png", enemy[i].width, enemy[i].height, true));
@@ -251,3 +260,31 @@ void initializing()
 		bullet[i].setSpeed(1000);
 	}
 }
+void enemySpawns(float a_deltaTime)
+{
+	enemySpawnBuffer += a_deltaTime;
+	if (enemyBuffer >= enemyCount - 1)
+	{
+		enemyBuffer = 0;
+	}
+	if (enemySpawnBuffer >= enemy[enemyBuffer].spawnTime)
+	{
+		enemy[enemyBuffer].setDimensions(64, 64);
+		enemy[enemyBuffer].setHealth(15);
+		enemy[enemyBuffer].setID(CreateSprite("./images/shootandscoot_enemy.png", enemy[enemyBuffer].width, enemy[enemyBuffer].height, true));
+		enemy[enemyBuffer].setPos((screenWidth / 2) - enemyXbuffer, enemyYbuffer);
+		enemy[enemyBuffer].alive = true;
+		if (enemy[enemyBuffer].levelTwo == true)
+		{
+			enemyTwo[enemyBuffer].setDimensions(64, 64);
+			enemyTwo[enemyBuffer].setHealth(15);
+			enemyTwo[enemyBuffer].setID(CreateSprite("./images/shootandscoot_enemy.png", enemyTwo[enemyBuffer].width, enemyTwo[enemyBuffer].height, true));
+			enemyTwo[enemyBuffer].setPos((screenWidth / 2) + (enemyXbuffer * .33), enemyYbuffer);
+			enemyTwo[enemyBuffer].alive = true;
+		}
+		enemyBuffer += 1;
+		enemyXbuffer = -(enemyXbuffer);
+		enemySpawnBuffer = 0;
+	}
+}
+

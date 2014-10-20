@@ -8,8 +8,10 @@ public:
 	Enemy();
 	~Enemy();
 	void setSpawnTime(float newSpawnTime);
+	void enemyCheck(float a_deltaTime, int a_screenHeight);
 	float spawnTime;
 	bool flip = false;
+	bool levelTwo = false;
 };
 
 
