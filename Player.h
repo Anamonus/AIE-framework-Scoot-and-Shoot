@@ -16,6 +16,7 @@ public:
 	int spritefire;
 	int spriteBuffer;
 	int fireKey;
+	int lives;
 private:
 	int leftKey;
 	int rightKey;

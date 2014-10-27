@@ -24,8 +24,10 @@ void enemyChecks(float a_deltaTime, int a_screenHeight);
 void bulletChecks(float a_deltaTime);
 void trackMouse();
 void initializing();
+void bossSpawn(float a_deltaTime);
 void enemySpawns(float a_deltaTime);
 float enemySpawnBuffer;
+float bossSpawnBuffer;
 float levelProgress = screenHeight;
 float levelSpeed = 125;
 char deadEnemies[6];
@@ -34,6 +36,7 @@ Enemy enemyTwo[enemyCount];
 Bullet bullet[bulletCap];
 Player player;
 Button startButton;
+Enemy boss;
 int main(int argc, char* argv[])
 {
 	Initialise(screenWidth, screenHeight, false, "Shoot And Scoot");
@@ -52,6 +55,7 @@ int main(int argc, char* argv[])
 		case GameStates.MAIN_MENU:
 			MoveSprite(mainMenu, screenWidth / 2, screenHeight / 2);
 			DrawSprite(mainMenu);
+			bossSpawn(deltaTime);
 			MoveSprite(startButton.spriteID, startButton.x, startButton.y);
 			DrawSprite(startButton.spriteID);
 			trackMouse();
@@ -83,6 +87,11 @@ int main(int argc, char* argv[])
 			{
 				GameStates.currentState = GameStates.LEVEL_TWO;
 				enemiesSlain = 0;
+				for (int i = 0; i < enemyCount; i++)
+				{
+					enemy[i].levelTwo = true;
+				}
+				
 			}
 			break;
 		case GameStates.LEVEL_TWO:
@@ -102,7 +111,13 @@ int main(int argc, char* argv[])
 			//Bullet actions
 			bulletChecks(deltaTime);
 			//Enemy actions
-			
+			enemySpawns(deltaTime);
+			enemyChecks(deltaTime, screenHeight);
+			if (enemiesSlain == 25)
+			{
+				GameStates.currentState = GameStates.LEVEL_THREE;
+				enemiesSlain = 0;
+			}
 			break;
 		case GameStates.LEVEL_THREE:
 			MoveSprite(level, screenWidth / 2, levelProgress);
@@ -120,6 +135,8 @@ int main(int argc, char* argv[])
 			MoveSprite(player.spriteID, player.x, player.y);
 			//Bullet actions
 			bulletChecks(deltaTime);
+			//Boss actions
+			bossSpawn(deltaTime);
 			break;
 		}	
 		ClearScreen();
@@ -155,6 +172,26 @@ void enemyChecks(float a_deltaTime, int a_screenHeight)
 			if ((enemy[i].health <= 0) && (enemy[i].alive == true))
 			{
 				enemy[i].alive = false;
+				enemiesSlain++;
+			}
+		}
+	}
+	for (int i = 0; i < enemyCount; i++)
+	{
+		enemyTwo[i].enemyCheck(a_deltaTime, a_screenHeight);
+		if (enemyTwo[i].alive == true)
+		{
+			if (enemyXbuffer < 0)
+			{
+				enemyTwo[enemyBuffer].flip = true;
+			}
+			else if (enemyXbuffer > 0)
+			{
+				enemyTwo[enemyBuffer].flip = false;
+			}
+			if ((enemyTwo[i].health <= 0) && (enemyTwo[i].alive == true))
+			{
+				enemyTwo[i].alive = false;
 				enemiesSlain++;
 			}
 		}
@@ -225,6 +262,14 @@ void bulletChecks(float a_deltaTime)
 					enemy[ii].hit = true;
 				}
 			}
+			if (collision(bullet[i].x, bullet[i].y, enemyTwo[ii].x, enemyTwo[ii].y, bullet[i].width, enemyTwo[ii].width) && (bullet[i].firing == true))
+			{
+				if (enemyTwo[ii].alive == true)
+				{
+					bullet[i].setPos(screenWidth + bullet[i].width, screenHeight + bullet[i].height);
+					enemyTwo[ii].hit = true;
+				}
+			}
 		}
 	}
 }
@@ -235,7 +280,7 @@ void initializing()
 	player.iDfire(CreateSprite("./images/shootandscoot_player_fire.png", player.width, player.height, true));
 	player.setMoveKeys('A', 'D', 'W', 'S');
 	player.setFireKey(' ');
-	player.setSpeed(250);
+	player.setSpeed(350);
 	player.setMoveExtremes(player.width / 2, screenWidth - (player.width / 2), screenHeight - (player.height / 2), player.height / 2);
 	player.setPos(screenWidth / 2, screenHeight / 4);
 	player.setBuffer();
@@ -244,18 +289,28 @@ void initializing()
 	startButton.setPos(screenWidth / 2, screenHeight * .4);
 	startButton.setID(CreateSprite("./images/shootandscoot_startbutton.png", startButton.width, startButton.height, true));
 
+	boss.setDimensions(119, 83);
+	boss.setSpeed(100);
+	boss.setHealth(200);
+	boss.setPos(screenWidth / 2, screenHeight / 2);
+	boss.setID(CreateSprite("./images/shootandscoot_enemyplaceholder.png", boss.width, boss.height, true));
+
 	for (int i = 0; i < enemyCount; i++)
 	{
 		enemy[enemyBuffer].setID(CreateSprite("./images/shootandscoot_enemy.png", enemy[i].width, enemy[i].height, true));
-		enemy[i].setSpawnTime(2);
+		enemy[i].setSpawnTime(1.2f);
 		enemy[i].setSpeed(350);
 		enemy[i].setHealth(15);
+		enemyTwo[enemyBuffer].setID(CreateSprite("./images/shootandscoot_enemy.png", enemyTwo[i].width, enemyTwo[i].height, true));
+		enemyTwo[i].setSpawnTime(1.2f);
+		enemyTwo[i].setSpeed(350);
+		enemyTwo[i].setHealth(15);
 	}
 	for (int i = 0; i < bulletCap; i++)
 	{
 		bullet[i].setDimensions(9, 16);
 		bullet[i].setID(CreateSprite("./images/shootandscoot_bullet.png", bullet[i].width, bullet[i].height, true));
-		bullet[i].updateFireSpeed(0.07f);
+		bullet[i].updateFireSpeed(0.1f);
 		bullet[i].setPos(player.x, player.y);
 		bullet[i].setSpeed(1000);
 	}
@@ -286,5 +341,10 @@ void enemySpawns(float a_deltaTime)
 		enemyXbuffer = -(enemyXbuffer);
 		enemySpawnBuffer = 0;
 	}
+}
+void bossSpawn(float a_deltaTime)
+{
+			boss.moveDown(a_deltaTime);
+			DrawSprite(boss.spriteID);
 }
 
