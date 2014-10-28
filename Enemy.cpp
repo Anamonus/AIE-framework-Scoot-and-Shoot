@@ -1,7 +1,6 @@
 #include "AIE.h"
 #include "Enemy.h"
 #include <iostream>
-
 Enemy::Enemy()
 {
 }

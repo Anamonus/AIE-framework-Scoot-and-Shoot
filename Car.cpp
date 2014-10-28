@@ -3,11 +3,9 @@
 #include "AIE.h"
 Car::Car()
 {
-
 }
 Car::~Car()
 {
-
 }
 void Car::setSpeed(int newSpeed)
 {

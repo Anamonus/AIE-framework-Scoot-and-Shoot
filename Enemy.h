@@ -1,7 +1,6 @@
 #ifndef _ENEMY_H_
 #define _ENEMY_H_
 #include "Car.h"
-
 class Enemy : public Car
 {
 public:
@@ -12,7 +11,6 @@ public:
 	float spawnTime;
 	bool flip = false;
 	bool levelTwo = false;
+	bool collided = false;
 };
-
-
 #endif

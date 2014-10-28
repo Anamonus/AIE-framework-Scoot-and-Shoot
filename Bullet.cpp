@@ -1,15 +1,12 @@
 #include <iostream>
 #include "Bullet.h"
 #include "AIE.h"
-
-
 Bullet::Bullet()
 {
 }
 Bullet::~Bullet()
 {
 }
-
 void Bullet::fire(float a_DeltaTime)
 {
 	y += speed * a_DeltaTime;

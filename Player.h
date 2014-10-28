@@ -1,7 +1,6 @@
 #ifndef _PLAYER_H_
 #define _PLAYER_H_
 #include "Car.h"
- 
 class Player : public Car
 {
 public:
@@ -13,6 +12,7 @@ public:
 	void action(float a_DeltaTime);
 	void iDfire(int newSpriteID);
 	void setBuffer();
+	void setLives(int newLives);
 	int spritefire;
 	int spriteBuffer;
 	int fireKey;
@@ -27,5 +27,4 @@ private:
 	int downKey;
 	int downExtreme;
 };
-
 #endif

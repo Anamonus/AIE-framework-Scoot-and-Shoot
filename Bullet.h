@@ -1,6 +1,5 @@
 #ifndef _BULLET_H_
 #define _BULLET_H_
-
 class Bullet
 {
 public:
@@ -24,7 +23,5 @@ public:
 	bool collided = false;
 	bool swap = false;
 private:
-
-
 };
 #endif

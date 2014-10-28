@@ -1,14 +1,12 @@
 #include <iostream>
 #include "Player.h"
 #include "AIE.h"
-
 Player::Player()
 {
 }
 Player::~Player()
 {
 }
-
 void Player::setMoveKeys(int a_moveLeft, int a_moveRight, int a_moveUp, int a_moveDown)
 {
 	leftKey = a_moveLeft;
@@ -83,4 +81,8 @@ void Player::iDfire(int newSpriteID)
 void Player::setBuffer()
 {
 	spriteBuffer = spriteID;
+}
+void Player::setLives(int newLives)
+{
+	lives = newLives;
 }

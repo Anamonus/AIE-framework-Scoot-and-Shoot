@@ -1,7 +1,6 @@
 #include <iostream>
 #include "Collision.h"
 #include "AIE.h"
-
 bool collision(int a_firstX, int a_firstY, int a_secondX, int a_secondY, int a_firstRadius, int a_secondRadius)
 {
 	int dX = a_firstX - a_secondX;

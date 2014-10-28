@@ -1,7 +1,6 @@
 #include <iostream>
 #include "Button.h"
 #include "AIE.h"
-
 Button::Button()
 {}
 Button::~Button()
