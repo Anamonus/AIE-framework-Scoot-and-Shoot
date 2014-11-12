@@ -16,7 +16,7 @@ public:
 		SURVIVAL,
 		HIGHSCORES,
 	};
-	GameState currentState= MAIN_MENU;
+	GameState currentState= SPLASH_SCREEN;
 	void SetState(GameState gameState);
 	~StateManager();
 private:

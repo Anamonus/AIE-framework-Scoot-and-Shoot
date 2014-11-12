@@ -24,6 +24,7 @@ void mouseConversion();
 void enemyChecks(float a_deltaTime, int a_screenHeight);
 void bulletChecks(float a_deltaTime);
 void trackMouse();
+void reset();
 void initializing();
 void playerChecks();
 void bossLogic(float a_deltaTime);
@@ -33,6 +34,7 @@ float bossSpawnBuffer;
 float levelProgress = screenHeight;
 float levelSpeed = 125;
 char deadEnemies[6];
+bool gameRunning = true;
 Enemy enemy[enemyCount];
 Enemy enemyTwo[enemyCount];
 Bullet bullet[bulletCap];
@@ -41,13 +43,18 @@ Button startButton;
 Enemy boss;
 Bullet bossBullet[bulletCap];
 StateManager GameStates;
+Button instructionsButton;
+Button quitButton;
 int main(int argc, char* argv[])
 {
 	Initialise(screenWidth, screenHeight, false, "Shoot And Scoot");
 	SetBackgroundColour(SColour(0, 0, 0, 255));
-	GameStates.SetState(GameStates.MAIN_MENU);
+	GameStates.SetState(GameStates.SPLASH_SCREEN);
 	int level = CreateSprite("./images/shootandscoot_level.png", screenWidth, screenHeight * 2, true);
 	int mainMenu = CreateSprite("./images/shootandscoot_title.png", screenWidth, screenHeight, true);
+	int splashScreen = CreateSprite("./images/shootandscoot_splash.png", screenWidth, screenHeight, true);
+	int instructionScreen = CreateSprite("./images/shootandscoot_instructions.png", screenWidth, screenHeight, true);
+	int gameOver = CreateSprite("./images/shootandscoot_gameover.png", screenWidth, screenHeight, true);
 	//Creates all the sprites, limitations, and commands for all entities
 	initializing();
 	do
@@ -56,12 +63,17 @@ int main(int argc, char* argv[])
 		switch (GameStates.currentState)
 		{
 		case GameStates.SPLASH_SCREEN:
+			MoveSprite(splashScreen, screenWidth / 2, screenHeight / 2);
+			DrawSprite(splashScreen);
 			if (IsKeyDown(' '))
 			{
 				GameStates.currentState = GameStates.MAIN_MENU;
 			}
 			break;
 		case GameStates.GAME_OVER:
+			MoveSprite(gameOver, screenWidth / 2, screenHeight / 2);
+			DrawSprite(gameOver);
+			reset();
 			if (IsKeyDown(' '))
 			{
 				GameStates.currentState = GameStates.MAIN_MENU;
@@ -70,8 +82,12 @@ int main(int argc, char* argv[])
 		case GameStates.MAIN_MENU:
 			MoveSprite(mainMenu, screenWidth / 2, screenHeight / 2);
 			DrawSprite(mainMenu);
+			DrawSprite(instructionsButton.spriteID);
+			MoveSprite(instructionsButton.spriteID, instructionsButton.x, instructionsButton.y);
 			MoveSprite(startButton.spriteID, startButton.x, startButton.y);
 			DrawSprite(startButton.spriteID);
+			DrawSprite(quitButton.spriteID);
+			MoveSprite(quitButton.spriteID, quitButton.x, quitButton.y);
 			trackMouse();
 			for (int i = 0; i < enemyCount; i++)
 			{
@@ -80,6 +96,14 @@ int main(int argc, char* argv[])
 			if (pointBoxCollision(mouseX, mouseY, startButton.x, startButton.y, startButton.height, startButton.width) && GetMouseButtonDown(MOUSE_BUTTON_1))
 			{
 				GameStates.currentState = GameStates.LEVEL_ONE;
+			}
+			if (pointBoxCollision(mouseX, mouseY, instructionsButton.x, instructionsButton.y, instructionsButton.height, instructionsButton.width) && GetMouseButtonDown(MOUSE_BUTTON_1))
+			{
+				GameStates.currentState = GameStates.INSTRUCTIONS;
+			}
+			if (pointBoxCollision(mouseX, mouseY, quitButton.x, quitButton.y, quitButton.height, quitButton.width) && GetMouseButtonDown(MOUSE_BUTTON_1))
+			{
+				gameRunning = false;
 			}
 			ClearScreen();
 			break;
@@ -165,7 +189,7 @@ int main(int argc, char* argv[])
 			break;
 		}	
 		ClearScreen();
-	} while (!FrameworkUpdate());
+	} while (!FrameworkUpdate() && gameRunning == true);
 	Shutdown();
 	return 0;
 }
@@ -319,6 +343,14 @@ void initializing()
 	startButton.setDimensions(200, 64);
 	startButton.setPos(screenWidth / 2, screenHeight * .4);
 	startButton.setID(CreateSprite("./images/shootandscoot_startbutton.png", startButton.width, startButton.height, true));
+
+	instructionsButton.setDimensions(600, 64);
+	instructionsButton.setPos(screenWidth / 2, screenHeight * .3);
+	instructionsButton.setID(CreateSprite("./images/shootandscoot_instructionsbutton.png", instructionsButton.width, instructionsButton.height, true));
+
+	quitButton.setDimensions(200, 64);
+	quitButton.setPos(screenWidth / 2, screenHeight * .2);
+	quitButton.setID(CreateSprite("./images/shootandscoot_quitbutton.png", quitButton.width, quitButton.height, true));
 
 	boss.setDimensions(128, 96);
 	boss.setSpeed(250);
@@ -481,7 +513,16 @@ void playerChecks()
 	}
 	if (player.lives == 0)
 	{
-		GameStates.currentState = GameStates.MAIN_MENU;
+		GameStates.currentState = GameStates.GAME_OVER;
 		player.setLives(3);
 	}
+}
+void reset()
+{
+	enemyXbuffer = screenWidth * .25;
+	enemyYbuffer = screenHeight * 1.05;
+	enemiesSlain = 0;
+	enemyBuffer = 0;
+	bulletBuffer = 0;
+	bossBulletBuffer = 0;
 }
